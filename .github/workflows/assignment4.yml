@@ -44,7 +44,7 @@ jobs:
           docker-compose -f docker-compose.yml up -d
           containers_status=$?
 
-          if [$containers_status -eq 0]; then
+          if [ $containers_status -eq 0 ]; then
             echo "Containers up and running" >> log.txt
           else
             echo "Containers failed to run" >> log.txt
