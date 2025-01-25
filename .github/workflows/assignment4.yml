@@ -51,6 +51,12 @@ jobs:
             echo "Containers failed to run" >> $GITHUB_WORKSPACE/log.txt
           fi
 
+      - name: Upload log.txt artifact  # Step 6: Upload the log.txt artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: log
+          path: $GITHUB_WORKSPACE/log.txt  # Upload log.txt to share with the next job
+
   test:
     runs-on: ubuntu-latest
     needs: build  # This job depends on the build job to complete
@@ -65,7 +71,13 @@ jobs:
           sudo apt install -y python3 python3-pip
           pip3 install pytest
 
-      - name: Append to log.txt after tests  # Step 3: Append test results to log.txt
+      - name: Download log.txt artifact  # Step 3: Download the log.txt artifact from the build job
+        uses: actions/download-artifact@v4
+        with:
+          name: log  # This should match the artifact name used in the build job
+          path: $GITHUB_WORKSPACE  # Save it in the workspace directory
+
+      - name: Append to log.txt after tests  # Step 4: Append test results to log.txt
         run: |
           pytest tests/assn4_tests.py > assn4_test_results.txt || true
           cat assn4_test_results.txt
@@ -75,7 +87,7 @@ jobs:
             echo "tests succeeded" >> $GITHUB_WORKSPACE/log.txt
           fi
 
-      - name: Check if log.txt exists before uploading  # Step 4: Debug if log.txt is there
+      - name: Check if log.txt exists before uploading  # Step 5: Debug if log.txt is there
         run: |
           if [ -f "$GITHUB_WORKSPACE/log.txt" ]; then
             echo "log.txt exists!"
@@ -84,14 +96,8 @@ jobs:
             echo "log.txt does NOT exist!"  # Debugging message
           fi
 
-      - name: Upload test results  # Step 5: Upload test results as an artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: assn4_test_results.txt  # Upload the test results file
-
       - name: Upload updated log.txt  # Step 6: Upload the updated log.txt as a separate artifact
         uses: actions/upload-artifact@v4
         with:
           name: log
-          path: log.txt  # Upload log.txt (from the workspace) after modification
+          path: $GITHUB_WORKSPACE/log.txt  # Upload updated log.txt after modification
