@@ -51,11 +51,10 @@ jobs:
             echo "Containers failed to run" >> log.txt  # Append failure status
           fi
 
-      - name: Upload log.txt as artifact  # Upload the log.txt file as an artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: log-artifact  # The artifact's name
-          path: log.txt  # The file to upload
+      # Save log.txt to the workspace
+      - name: Save log.txt to workspace
+        run: |
+          mv log.txt $GITHUB_WORKSPACE/log.txt  # Move log.txt to the workspace directory
 
   test:
     runs-on: ubuntu-latest
@@ -71,11 +70,10 @@ jobs:
           sudo apt install -y python3 python3-pip
           pip3 install pytest
 
-      - name: Download log artifact  # Step 3: Download the log.txt file from the build job
-        uses: actions/download-artifact@v4
-        with:
-          name: log-artifact  # The artifact's name
-          path: ./  # Download it to the current directory
+      # Retrieve log.txt from workspace
+      - name: Retrieve log.txt from workspace
+        run: |
+          cp $GITHUB_WORKSPACE/log.txt ./log.txt  # Copy log.txt from the workspace to current directory
 
       - name: Run tests  # Step 4: Run pytest
         run: |
@@ -91,6 +89,7 @@ jobs:
           fi
 
       - name: Upload artifacts  # Upload test results and the log file
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results-and-log
@@ -104,4 +103,3 @@ jobs:
     steps:
       - name: Next steps
         run: echo "Proceeding to the next job..."
-
