@@ -88,7 +88,7 @@ jobs:
 
   next_job:  # Placeholder for the third job
     runs-on: ubuntu-latest
-    needs: pytest  # Depends on the pytest job
+    needs: test  # Depends on the pytest job
     steps:
       - name: Next steps
         run: echo "Proceeding to the next job..."
