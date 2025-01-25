@@ -26,10 +26,12 @@ jobs:
           echo "Start time: $start_time" > log.txt
           echo "Yossi Peleg" >> log.txt  # You can change this if needed
 
+          set +e
+
           # Build images using docker-compose
-          docker-compose -f docker-compose.yml build || true # To continue even if the build fails
+          docker-compose -f docker-compose.yml build 
           build_status=$?
-          
+          set -e
           if [ $build_status -eq 0 ]; then
             echo "image successfully built" >> log.txt
           else
