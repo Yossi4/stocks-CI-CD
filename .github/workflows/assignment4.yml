@@ -36,7 +36,19 @@ jobs:
             echo "image not able to be built" >> log.txt
           fi
 
-          docker image ls  # To list the images built, if necessary
+          docker image ls  # To list the images built
+      
+      - name: Docker-Conpose up
+        run: |
+          # Using detached mode:
+          docker-compose -f docker-compose.yml up -d
+          containers_status=$?
+
+          if [$containers_status -eq 0]; then
+            echo "Containers up and running" >> log.txt
+          else
+            echo "Containers failed to run" >> log.txt
+          fi
 
       - name: Upload log file
         uses: actions/upload-artifact@v4
