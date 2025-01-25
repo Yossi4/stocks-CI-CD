@@ -1,0 +1,26 @@
+name: assignment4
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build Docker images
+      run: |
+        docker-compose -f docker-compose.yml build -d
+        docker-compose ps
+
