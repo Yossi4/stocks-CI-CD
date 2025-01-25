@@ -19,42 +19,77 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose  # Make docker-compose executable
 
-      - name: Build Docker images  # Step 4: Build Docker images for the stocks and capital-gains services
+      - name: Build Docker images  # Step 4: Build Docker images for the services
         id: build_images
         run: |
           start_time=$(date -Iminutes)  # Capture the start time
           echo "Start time: $start_time" > log.txt
           echo "Yossi Peleg" >> log.txt  # You can change this if needed
 
-
-          # Build images using docker-compose
           set +e
-          docker-compose -f docker-compose.yml build 
+          docker-compose -f docker-compose.yml build  # Build images
           build_status=$?
+          set -e
+
           if [ $build_status -eq 0 ]; then
             echo "image successfully built" >> log.txt
           else
             echo "image not able to be built" >> log.txt
           fi
 
-          docker image ls  # To list the images built
-      
-      - name: Docker-Conpose up
+      - name: Docker Compose up  # Step 5: Start the application
+        if: success()
         run: |
-          # Using detached mode:
+          set +e
           docker-compose -f docker-compose.yml up -d
-          docker ps #For verification
-          containers_status=$?
-          if [ $containers_status -eq 0 ]; then
+          up_status=$?
+          set -e
+
+          if [ $up_status -eq 0 ]; then
             echo "Containers up and running" >> log.txt
           else
             echo "Containers failed to run" >> log.txt
           fi
-          set -e
-      - name: Upload log file
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build  # This job depends on the build job to complete
+
+    steps:
+      - name: Checkout repository  # Step 1: Checkout the code from your repository
+        uses: actions/checkout@v2  # This allows GitHub Actions to access your repository
+
+      - name: Set up Python environment  # Step 2: Install Python and pytest
+        run: |
+          sudo apt update
+          sudo apt install -y python3 python3-pip
+          pip3 install pytest
+
+      - name: Run tests  # Step 3: Run pytest
+        run: |
+          pytest tests/assn4_tests.py > assn4_test_results.txt || true
+
+      - name: Log test results status  # Update log.txt with test results
+        run: |
+          if grep -q "FAILURES" assn4_test_results.txt; then
+            echo "tests failed" >> log.txt
+          else
+            echo "tests succeeded" >> log.txt
+          fi
+
+      - name: Upload artifacts  # Upload test results and the log file
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: log-file
-          path: log.txt
+          name: test-results-and-log
+          path: |
+            assn4_test_results.txt
+            log.txt
+
+  next_job:  # Placeholder for the third job
+    runs-on: ubuntu-latest
+    needs: pytest  # Depends on the pytest job
+    steps:
+      - name: Next steps
+        run: echo "Proceeding to the next job..."
 
