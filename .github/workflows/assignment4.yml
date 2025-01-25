@@ -1,4 +1,4 @@
-kname: assignment4
+name: assignment4
 
 on:
   workflow_dispatch:  # Triggered manually from GitHub UI
