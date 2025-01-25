@@ -31,7 +31,6 @@ jobs:
           set +e
           docker-compose -f docker-compose.yml build 
           build_status=$?
-          set -e
           if [ $build_status -eq 0 ]; then
             echo "image successfully built" >> log.txt
           else
@@ -46,7 +45,7 @@ jobs:
           docker-compose -f docker-compose.yml up -d
           docker ps #For verification
           containers_status=$?
-
+          set -e
           if [ $containers_status -eq 0 ]; then
             echo "Containers up and running" >> log.txt
           else
