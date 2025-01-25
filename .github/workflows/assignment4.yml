@@ -54,7 +54,7 @@ jobs:
       # Save log.txt to the workspace
       - name: Save log.txt to workspace
         run: |
-          mv log.txt $GITHUB_WORKSPACE/log.txt  # Move log.txt to the workspace directory
+          cp log.txt $GITHUB_WORKSPACE/log.txt  # Copy log.txt to the workspace directory
 
   test:
     runs-on: ubuntu-latest
@@ -89,7 +89,6 @@ jobs:
           fi
 
       - name: Upload artifacts  # Upload test results and the log file
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results-and-log
