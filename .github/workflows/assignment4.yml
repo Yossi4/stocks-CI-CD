@@ -1,4 +1,4 @@
-name: assignment4
+kname: assignment4
 
 on:
   workflow_dispatch:  # Triggered manually from GitHub UI
@@ -51,12 +51,6 @@ jobs:
             echo "Containers failed to run" >> log.txt
           fi
 
-      - name: Upload log file  # Upload log.txt for debugging purposes
-        uses: actions/upload-artifact@v4
-        with:
-          name: log-file
-          path: log.txt
-
   test:
     runs-on: ubuntu-latest
     needs: build  # This job depends on the build job to complete
@@ -75,13 +69,7 @@ jobs:
         run: |
           pytest tests/assn4_tests.py > assn4_test_results.txt || true
 
-      - name: Upload test results  # Upload test results even if tests fail
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: assn4_test_results.txt
-
-      - name: Log test results status
+      - name: Log test results status  # Update log.txt with test results
         run: |
           if grep -q "FAILURES" assn4_test_results.txt; then
             echo "tests failed" >> log.txt
@@ -89,11 +77,13 @@ jobs:
             echo "tests succeeded" >> log.txt
           fi
 
-      - name: Upload updated log file  # Upload updated log file for debugging purposes
+      - name: Upload artifacts  # Upload test results and the log file
         uses: actions/upload-artifact@v4
         with:
-          name: updated-log-file
-          path: log.txt
+          name: test-results-and-log
+          path: |
+            assn4_test_results.txt
+            log.txt
 
   next_job:  # Placeholder for the third job
     runs-on: ubuntu-latest
