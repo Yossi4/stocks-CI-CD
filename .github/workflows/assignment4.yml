@@ -1,26 +1,25 @@
 name: assignment4
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:  # Triggered manually from GitHub UI
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # The job will run on a fresh Ubuntu environment
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository  # Step 1: Checkout the code from your repository
+        uses: actions/checkout@v2  # This allows GitHub Actions to access your repository
 
-    - name: Set up Docker
-      uses: docker/setup-buildx-action@v2
+      - name: Set up Docker  # Step 2: Install Docker
+        uses: docker/setup-buildx-action@v2  # Action to set up Docker for the job
 
-    - name: Build Docker images
-      run: |
-        docker-compose -f docker-compose.yml build -d
-        docker-compose ps
+      - name: Install Docker Compose  # Step 3: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose  # Make docker-compose executable
 
+      - name: Build Docker images  # Step 4: Build Docker images for the stocks and capital-gains services
+        run: |
+          docker-compose -f docker-compose.yml build  # Build images using docker-compose
+          docker ps
