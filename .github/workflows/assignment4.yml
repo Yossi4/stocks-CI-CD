@@ -51,11 +51,11 @@ jobs:
             echo "Containers failed to run" >> log.txt  # Append failure status
           fi
 
-      - name: Upload log.txt artifact  # Step 6: Upload log.txt as an artifact
+      - name: Upload temp.txt as artifact  # Upload log.txt as temp.txt artifact (temp name)
         uses: actions/upload-artifact@v4
         with:
-          name: log-artifact
-          path: log.txt  # Upload log.txt as an artifact
+          name: temp-artifact  # Temporary artifact name
+          path: log.txt  # The file to upload
 
   test:
     runs-on: ubuntu-latest
@@ -71,10 +71,10 @@ jobs:
           sudo apt install -y python3 python3-pip
           pip3 install pytest
 
-      - name: Download log.txt artifact  # Step 3: Download the log.txt artifact from build job
+      - name: Download temp artifact  # Step 3: Download the temp.txt artifact from the build job
         uses: actions/download-artifact@v4
         with:
-          name: log-artifact  # The artifact name
+          name: temp-artifact  # Temporary artifact name
           path: ./  # Download it to the current directory
 
       - name: Run tests  # Step 4: Run pytest
@@ -89,13 +89,15 @@ jobs:
           else
             echo "tests succeeded" >> log.txt  # Append "tests succeeded"
           fi
-      - name: Display current log.txt content  # Step to display the content of log.txt
-        run: |
-          echo "Current log.txt content:"
-          cat log.txt  # Print out the contents of log.txt to confirm
 
-      - name: Upload updated log.txt artifact  # Re-upload the updated log.txt artifact
+      - name: Upload log.txt as the final artifact  # Re-upload the updated log.txt as log.txt
         uses: actions/upload-artifact@v4
         with:
-          name: log-artifact
-          path: log.txt  # Upload the updated log.txt
+          name: log-artifact  # Final artifact name
+          path: log.txt  # The updated log.txt
+
+      - name: Upload test results  # Upload assn4_test_results.txt
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: assn4_test_results.txt
