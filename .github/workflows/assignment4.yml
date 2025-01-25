@@ -23,8 +23,8 @@ jobs:
         id: build_images
         run: |
           start_time=$(date -Iminutes)  # Capture the start time
-          echo "Start time: $start_time" > log.txt
-          echo "Yossi Peleg" >> log.txt  # You can change this if needed
+          echo "Start time: $start_time" > log.txt  # Overwrite log.txt initially to set start time
+          echo "Yossi Peleg" >> log.txt  # Add your name
 
           set +e
           docker-compose -f docker-compose.yml build  # Build images
@@ -46,10 +46,16 @@ jobs:
           set -e
 
           if [ $up_status -eq 0 ]; then
-            echo "Containers up and running" >> log.txt
+            echo "Containers up and running" >> log.txt  # Append status
           else
-            echo "Containers failed to run" >> log.txt
+            echo "Containers failed to run" >> log.txt  # Append failure status
           fi
+
+      - name: Upload log.txt as artifact  # Upload the log.txt file as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: log-artifact  # The artifact's name
+          path: log.txt  # The file to upload
 
   test:
     runs-on: ubuntu-latest
@@ -65,16 +71,22 @@ jobs:
           sudo apt install -y python3 python3-pip
           pip3 install pytest
 
-      - name: Run tests  # Step 3: Run pytest
+      - name: Download log artifact  # Step 3: Download the log.txt file from the build job
+        uses: actions/download-artifact@v4
+        with:
+          name: log-artifact  # The artifact's name
+          path: ./  # Download it to the current directory
+
+      - name: Run tests  # Step 4: Run pytest
         run: |
-          pytest tests/assn4_tests.py >> assn4_test_results.txt || true
+          pytest tests/assn4_tests.py > assn4_test_results.txt || true
 
       - name: Log test results status  # Update log.txt with test results
         run: |
           if grep -q "FAILURES" assn4_test_results.txt; then
-            echo "tests failed" >> log.txt
+            echo "tests failed" >> log.txt  # Append "tests failed"
           else
-            echo "tests succeeded" >> log.txt
+            echo "tests succeeded" >> log.txt  # Append "tests succeeded"
           fi
 
       - name: Upload artifacts  # Upload test results and the log file
@@ -83,7 +95,7 @@ jobs:
           name: test-results-and-log
           path: |
             assn4_test_results.txt
-            log.txt
+            log.txt  # Upload log.txt with the appended information
 
   next_job:  # Placeholder for the third job
     runs-on: ubuntu-latest
