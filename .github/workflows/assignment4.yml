@@ -51,10 +51,10 @@ jobs:
             echo "Containers failed to run" >> $GITHUB_WORKSPACE/log.txt
           fi
 
-      - name: Upload log.txt artifact  # Step 6: Upload the log.txt artifact
+      - name: Upload temporary log.txt artifact  # Step 6: Upload the log.txt artifact temporarily
         uses: actions/upload-artifact@v4
         with:
-          name: log
+          name: log-temp  # Temporary artifact name
           path: $GITHUB_WORKSPACE/log.txt  # Upload log.txt to share with the next job
 
   test:
@@ -71,10 +71,10 @@ jobs:
           sudo apt install -y python3 python3-pip
           pip3 install pytest
 
-      - name: Download log.txt artifact  # Step 3: Download the log.txt artifact from the build job
+      - name: Download log.txt artifact from build job  # Step 3: Download the log.txt artifact from the build job
         uses: actions/download-artifact@v4
         with:
-          name: log  # This should match the artifact name used in the build job
+          name: log-temp  # This should match the temporary artifact name used in the build job
           path: $GITHUB_WORKSPACE  # Save it in the workspace directory
 
       - name: Append to log.txt after tests  # Step 4: Append test results to log.txt
@@ -96,8 +96,8 @@ jobs:
             echo "log.txt does NOT exist!"  # Debugging message
           fi
 
-      - name: Upload updated log.txt  # Step 6: Upload the updated log.txt as a separate artifact
+      - name: Upload updated log.txt as the final artifact  # Step 6: Upload the final log.txt
         uses: actions/upload-artifact@v4
         with:
-          name: log
+          name: log  # Final artifact name
           path: $GITHUB_WORKSPACE/log.txt  # Upload updated log.txt after modification
