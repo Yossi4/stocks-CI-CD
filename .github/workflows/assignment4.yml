@@ -42,6 +42,7 @@ jobs:
         run: |
           # Using detached mode:
           docker-compose -f docker-compose.yml up -d
+          docker ps #For verification
           containers_status=$?
 
           if [ $containers_status -eq 0 ]; then
