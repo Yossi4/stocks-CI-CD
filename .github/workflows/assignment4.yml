@@ -22,4 +22,4 @@ jobs:
       - name: Build Docker images  # Step 4: Build Docker images for the stocks and capital-gains services
         run: |
           docker-compose -f docker-compose.yml build  # Build images using docker-compose
-          docker ps
+          docker image ls
