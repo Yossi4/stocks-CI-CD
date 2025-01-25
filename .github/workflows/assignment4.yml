@@ -28,8 +28,10 @@ jobs:
 
 
           # Build images using docker-compose
+          set +e
           docker-compose -f docker-compose.yml build 
           build_status=$?
+          set -e
           if [ $build_status -eq 0 ]; then
             echo "image successfully built" >> log.txt
           else
