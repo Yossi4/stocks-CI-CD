@@ -51,10 +51,7 @@ jobs:
             echo "Containers failed to run" >> log.txt  # Append failure status
           fi
 
-      # Save log.txt to the workspace
-      - name: Save log.txt to workspace
-        run: |
-          cp log.txt $GITHUB_WORKSPACE/log.txt  # Copy log.txt to the workspace directory
+      # No need to copy or move log.txt, it's already in the workspace
 
   test:
     runs-on: ubuntu-latest
@@ -70,10 +67,12 @@ jobs:
           sudo apt install -y python3 python3-pip
           pip3 install pytest
 
-      # Retrieve log.txt from workspace
-      - name: Retrieve log.txt from workspace
-        run: |
-          cp $GITHUB_WORKSPACE/log.txt ./log.txt  # Copy log.txt from the workspace to current directory
+      # Download log.txt directly from the workspace (it is already there)
+      - name: Download log.txt from workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: log-artifact  # The artifact name used during build job
+          path: ./  # Download it to the current directory
 
       - name: Run tests  # Step 4: Run pytest
         run: |
