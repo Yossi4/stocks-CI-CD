@@ -75,10 +75,14 @@ jobs:
             echo "tests succeeded" >> $GITHUB_WORKSPACE/log.txt
           fi
 
-      - name: Upload test results and log  # Step 4: Upload test results and log.txt
+      - name: Upload test results  # Step 4: Upload test results as an artifact
         uses: actions/upload-artifact@v4
         with:
-          name: final-artifacts
-          path: |
-            assn4_test_results.txt
-            $GITHUB_WORKSPACE/log.txt  # Upload log.txt (from the workspace) after modification
+          name: test-results
+          path: assn4_test_results.txt  # Upload the test results file
+  
+      - name: Upload updated log.txt  # Step 5: Upload the updated log.txt as a separate artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: log
+          path: $GITHUB_WORKSPACE/log.txt  # Upload log.txt (from the workspace) after modification
