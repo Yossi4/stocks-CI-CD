@@ -51,7 +51,11 @@ jobs:
             echo "Containers failed to run" >> log.txt  # Append failure status
           fi
 
-      # No need to copy or move log.txt, it's already in the workspace
+      - name: Upload log.txt artifact  # Step 6: Upload log.txt as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: log-artifact
+          path: log.txt  # Upload log.txt as an artifact
 
   test:
     runs-on: ubuntu-latest
@@ -67,11 +71,10 @@ jobs:
           sudo apt install -y python3 python3-pip
           pip3 install pytest
 
-      # Download log.txt directly from the workspace (it is already there)
-      - name: Download log.txt from workspace
+      - name: Download log.txt artifact  # Step 3: Download the log.txt artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: log-artifact  # The artifact name used during build job
+          name: log-artifact  # The artifact name
           path: ./  # Download it to the current directory
 
       - name: Run tests  # Step 4: Run pytest
@@ -86,18 +89,13 @@ jobs:
           else
             echo "tests succeeded" >> log.txt  # Append "tests succeeded"
           fi
+      - name: Display current log.txt content  # Step to display the content of log.txt
+        run: |
+          echo "Current log.txt content:"
+          cat log.txt  # Print out the contents of log.txt to confirm
 
-      - name: Upload artifacts  # Upload test results and the log file
+      - name: Upload updated log.txt artifact  # Re-upload the updated log.txt artifact
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-and-log
-          path: |
-            assn4_test_results.txt
-            log.txt  # Upload log.txt with the appended information
-
-  next_job:  # Placeholder for the third job
-    runs-on: ubuntu-latest
-    needs: test  # Depends on the pytest job
-    steps:
-      - name: Next steps
-        run: echo "Proceeding to the next job..."
+          name: log-artifact
+          path: log.txt  # Upload the updated log.txt
