@@ -17,7 +17,8 @@ services:
     restart: on-failure
 
   db:
-    image: mysql:8
+    build:
+      context: ./stockPortfolioDB
     environment:
       - MYSQL_ROOT_PASSWORD=Ani1Yotam!
       - MYSQL_DATABASE=stockPortfolioDB
