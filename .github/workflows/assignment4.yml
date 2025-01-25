@@ -75,13 +75,22 @@ jobs:
             echo "tests succeeded" >> $GITHUB_WORKSPACE/log.txt
           fi
 
-      - name: Upload test results  # Step 4: Upload test results as an artifact
+      - name: Check if log.txt exists before uploading  # Step 4: Debug if log.txt is there
+        run: |
+          if [ -f "$GITHUB_WORKSPACE/log.txt" ]; then
+            echo "log.txt exists!"
+            cat $GITHUB_WORKSPACE/log.txt  # Print log.txt content to debug
+          else
+            echo "log.txt does NOT exist!"  # Debugging message
+          fi
+
+      - name: Upload test results  # Step 5: Upload test results as an artifact
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: assn4_test_results.txt  # Upload the test results file
-  
-      - name: Upload updated log.txt  # Step 5: Upload the updated log.txt as a separate artifact
+
+      - name: Upload updated log.txt  # Step 6: Upload the updated log.txt as a separate artifact
         uses: actions/upload-artifact@v4
         with:
           name: log
