@@ -130,25 +130,51 @@ jobs:
     needs: test
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Get stocks before POST requests
-        run: |
-          echo "Getting stock list before POST requests"
-          curl -X GET http://localhost:8000/stocks
+    - name: Set up Docker Compose  # Ensure Docker Compose is installed again
+      run: |
+        sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose  # Make docker-compose executable
 
-      - name: Execute 6 POST requests to add stocks
-        run: |
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "NVIDIA Corporation", "symbol": "NVDA", "purchase price": 134.66, "purchase date": "18-06-2024", "shares": 7}' http://localhost:8000/stocks
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "Apple Inc.", "symbol": "AAPL", "purchase price": 183.63, "purchase date": "22-02-2024", "shares": 19}' http://localhost:8000/stocks
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "Alphabet Inc.", "symbol": "GOOG", "purchase price": 140.12, "purchase date": "24-10-2024", "shares": 14}' http://localhost:8000/stocks
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "Tesla, Inc.", "symbol": "TSLA", "purchase price": 194.58, "purchase date": "28-11-2022", "shares": 32}' http://localhost:8000/stocks
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "Microsoft Corporation", "symbol": "MSFT", "purchase price": 420.55, "purchase date": "09-02-2024", "shares": 35}' http://localhost:8000/stocks
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "Intel Corporation", "symbol": "INTC", "purchase price": 19.15, "purchase date": "13-01-2025", "shares": 10}' http://localhost:8000/stocks
+    - name: Start services with Docker Compose  # Deploy the services again
+      run: |
+        docker-compose -f docker-compose.yml up --build -d  # Start services in detached mode
 
-      - name: Get stocks after POST requests
-        run: |
-          echo "Getting stock list after POST requests"
-          curl -X GET http://localhost:8000/stocks
-  
+    - name: Wait for stocks service to be ready  # Step 6: Wait until the service is ready
+      run: |
+           for i in {1..30}; do  # Retry 30 times
+              if curl --silent --fail http://localhost:5001/stocks; then
+                echo "All services are up!"
+                break
+              else
+                echo "Waiting for services to be available..."
+                sleep 5
+              fi
+            done
+
+    - name: Check running containers with docker ps  # Step 4: Verify containers are running
+      run: |
+          echo "Listing all running containers:"
+          docker ps  # List all running containers
+    
+
+    - name: Get stocks before POST requests
+      run: |
+        echo "Getting stock list before POST requests"
+        curl -X GET http://localhost:5001/stocks
+
+    - name: Execute 6 POST requests to add stocks
+      run: |
+        curl -X POST -H "Content-Type: application/json" -d '{"name": "NVIDIA Corporation", "symbol": "NVDA", "purchase price": 134.66, "purchase date": "18-06-2024", "shares": 7}' http://localhost:5001/stocks
+        curl -X POST -H "Content-Type: application/json" -d '{"name": "Apple Inc.", "symbol": "AAPL", "purchase price": 183.63, "purchase date": "22-02-2024", "shares": 19}' http://localhost:5001/stocks
+        curl -X POST -H "Content-Type: application/json" -d '{"name": "Alphabet Inc.", "symbol": "GOOG", "purchase price": 140.12, "purchase date": "24-10-2024", "shares": 14}' http://localhost:5001/stocks
+        curl -X POST -H "Content-Type: application/json" -d '{"name": "Tesla, Inc.", "symbol": "TSLA", "purchase price": 194.58, "purchase date": "28-11-2022", "shares": 32}' http://localhost:5001/stocks
+        curl -X POST -H "Content-Type: application/json" -d '{"name": "Microsoft Corporation", "symbol": "MSFT", "purchase price": 420.55, "purchase date": "09-02-2024", "shares": 35}' http://localhost:5001/stocks
+        curl -X POST -H "Content-Type: application/json" -d '{"name": "Intel Corporation", "symbol": "INTC", "purchase price": 19.15, "purchase date": "13-01-2025", "shares": 10}' http://localhost:5001/stocks
+
+    - name: Get stocks after POST requests
+      run: |
+        echo "Getting stock list after POST requests"
+        curl -X GET http://localhost:5001/stocks
