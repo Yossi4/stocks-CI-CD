@@ -30,9 +30,9 @@ base_url = "http://localhost:5001"  # Replace with actual endpoint if different
 
 def test_create_stocks():
     # Perform POST requests for the three stocks
-    response1 = requests.post(f"{base_url}/stock", json=stock1)
-    response2 = requests.post(f"{base_url}/stock", json=stock2)
-    response3 = requests.post(f"{base_url}/stock", json=stock3)
+    response1 = requests.post(f"{base_url}/stocks", json=stock1)
+    response2 = requests.post(f"{base_url}/stocks", json=stock2)
+    response3 = requests.post(f"{base_url}/stocks", json=stock3)
 
     # Assert status codes are 201 (Created)
     assert response1.status_code == 201
