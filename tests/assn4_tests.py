@@ -193,7 +193,7 @@ def test_delete_stock_by_id(): # Test 7
 
 
 
-def test_delete_stock_by_id():
+def test_delete_stock_by_id2():
     ids = test_create_stocks()
     stock1_id, stock2_id, stock3_id = ids
 
