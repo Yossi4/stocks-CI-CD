@@ -89,13 +89,7 @@ jobs:
             echo "tests succeeded" >> log.txt  # Append "tests succeeded"
           fi
 
-      - name: Upload artifacts  # Upload test results and the log file
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-and-log
-          path: |
-            assn4_test_results.txt
-            log.txt  # Upload log.txt with the appended information
+      
       - name: Upload test results  # Upload the pytest results file
         uses: actions/upload-artifact@v4
         with:
