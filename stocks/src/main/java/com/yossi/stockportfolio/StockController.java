@@ -131,7 +131,7 @@ public ResponseEntity<List<Stock>> getAllStocks(@RequestParam(value = "shares", 
 
        if (stockOpt.isPresent()) {
            stockRepository.delete(stockOpt.get());
-           return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+           return new ResponseEntity<>(HttpStatus.OK);
        } else {
            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
        }

@@ -103,6 +103,7 @@ jobs:
       - name: Run tests  # Step 4: Run pytest
         run: |
           pytest tests/assn4_tests.py > assn4_test_results.txt || true
+          cat assn4_test_results.txt
 
       - name: Log test results status  # Update log.txt with test results
         run: |
