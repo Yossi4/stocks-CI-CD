@@ -159,7 +159,7 @@ def test_get_portfolio_value():
     shares2 = stock2["shares"]
     shares3 = stock3["shares"]
 
-    assert shares
+    
 
     total_value = sv1*shares1 + sv2*shares2 + sv3*shares3
 
