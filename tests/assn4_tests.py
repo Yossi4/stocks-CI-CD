@@ -189,6 +189,15 @@ def test_delete_stock_by_id(): # Test 7
 
     assert response.status_code == 200
 
-    global created_stock_ids
-    created_stock_ids.remove(stock2_id)
+   
+
+
+
+def test_delete_stock_by_id():
+    ids = test_create_stocks()
+    stock1_id, stock2_id, stock3_id = ids
+
+    response_get = requests.get(f"{base_url}/stocks/{stock2_id}")
+    assert response_get.status_code == 404
+
 
