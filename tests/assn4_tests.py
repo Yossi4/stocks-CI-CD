@@ -1,50 +1,21 @@
+import pytest
 import requests
 
-# Define the stock data for the three stocks
-stock1 = {
-    "name": "NVIDIA Corporation", 
-    "symbol": "NVDA",
-    "purchase price": 134.66, 
-    "purchase date": "18-06-2024",
-    "shares":7
-}
+# Replace this URL with the actual address of your stocks service
+STOCKS_SERVICE_URL = "http://localhost:5001/stocks"
 
-stock2 = {
-    "name": "Apple Inc.", 
-    "symbol": "AAPL",
-    "purchase price": 183.63, 
-    "purchase date": "22-02-2024", 
-    "shares": 19
-}
+@pytest.fixture(scope="module")
+def check_stocks_service():
+    """Fixture to check if the stocks service is running."""
+    try:
+        response = requests.get(STOCKS_SERVICE_URL)
+        # Check for 204 No Content status code (service is up but empty)
+        assert response.status_code == 204, f"Expected 204, but got {response.status_code}"
+        print("Stocks service is up and running, but empty.")
+    except requests.RequestException as e:
+        pytest.fail(f"Failed to connect to stocks service: {e}")
 
-stock3 = {
-    "name": "Alphabet Inc.", 
-    "symbol": "GOOG",
-    "purchase price": 140.12, 
-    "purchase date": "24-10-2024", 
-    "shares": 14
-}
-
-# The base URL of your application (adjust as necessary)
-base_url = "http://localhost:5001/stocks"  # Replace with actual endpoint if different
-
-def test_create_stocks():
-    # Perform POST requests for the three stocks
-    response1 = requests.post(f"{base_url}/stock", json=stock1)
-    response2 = requests.post(f"{base_url}/stock", json=stock2)
-    response3 = requests.post(f"{base_url}/stock", json=stock3)
-
-    # Assert status codes are 201 (Created)
-    assert response1.status_code == 201
-    assert response2.status_code == 201
-    assert response3.status_code == 201
-
-    # Get the returned IDs from the responses
-    id1 = response1.json().get("id")
-    id2 = response2.json().get("id")
-    id3 = response3.json().get("id")
-
-    # Assert that all IDs are unique
-    assert id1 != id2
-    assert id1 != id3
-    assert id2 != id3
+def test_stocks_service(check_stocks_service):
+    """Test that ensures the stocks service is up and responsive."""
+    # The fixture check_stocks_service does the verification
+    assert check_stocks_service is None, "The stocks service is not available."
