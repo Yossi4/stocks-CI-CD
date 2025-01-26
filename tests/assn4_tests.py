@@ -143,3 +143,20 @@ def test_get_stock_by_id2():
     sv3 = response3.json()["stock value"]
 
     return [sv1,sv2,sv3]
+
+
+def test_get_portfolio_value():
+    stock_values = test_get_stock_by_id2()
+    sv1, sv2, sv3 = float(stock_values[0]), float(stock_values[1]), float(stock_values[2])
+
+    response = requests.get(f"{base_url}/portfolio-value")
+
+    assert response.status_code == 200
+
+    pv = float(response.json()["portfolio value"])
+
+    total_value = sv1 + sv2 + sv3
+
+    # Checking for the ±3%:
+    assert pv * 0.97 <= total_value <= pv * 1.03
+
