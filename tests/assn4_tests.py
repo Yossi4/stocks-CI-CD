@@ -69,7 +69,11 @@ stock8 = {
 # The base URL of your application (adjust as necessary)
 base_url = "http://localhost:5001"  # Replace with actual endpoint if different
 
-def test_create_stocks():
+
+
+
+def test_create_stocks(): # Test 1
+    
     # Perform POST requests for the three stocks
     response1 = requests.post(f"{base_url}/stocks", json=stock1)
     response2 = requests.post(f"{base_url}/stocks", json=stock2)
@@ -92,7 +96,7 @@ def test_create_stocks():
 
     return id1 # For future tests
 
-def test_get_stock_by_id():
+def test_get_stock_by_id(): # Test 2
     
     # Accuiring the first id:
     stock1_id = test_create_stocks()
@@ -105,5 +109,13 @@ def test_get_stock_by_id():
     assert response.json()["symbol"] == "NVDA"
 
 
+def test_get_all_stocks():
+    response = requests.get(f"{base_url}/stocks")
+
+    assert response.status_code == 200
+
+    stocks = response.json()
+
+    assert len(stocks) == 3
 
 
