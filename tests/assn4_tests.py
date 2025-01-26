@@ -25,6 +25,47 @@ stock3 = {
     "shares": 14
 }
 
+stock4 = {
+    "name":"Tesla, Inc.", 
+    "symbol":"TSLA",
+    "purchase price":194.58, 
+    "purchase date":"28-11-2022",
+    "shares":32
+
+}
+stock5 = {
+    "name":"Microsoft Corporation", 
+    "symbol":"MSFT",
+    "purchase price":420.55, 
+    "purchase date":"09-02-2024",
+    "shares":35
+}
+
+stock6 = {
+    "name":"Intel Corporation", 
+    "symbol":"INTC",
+    "purchase price":19.15, 
+    "purchase date":"13-01-2025", 
+    "shares":10
+}
+
+stock7 = {
+
+    "name":"Amazon.com, Inc.", 
+    "purchase price":134.66, 
+    "purchase date":"18-06-2024", 
+    "shares":7
+}
+
+
+stock8 = {
+    "name":"Amazon.com, Inc.", 
+    "symbol":"AMZN",
+    "purchase price":134.66,
+    "purchase date":"Tuesday, June 18, 2024",
+    "shares":7
+}
+
 # The base URL of your application (adjust as necessary)
 base_url = "http://localhost:5001"  # Replace with actual endpoint if different
 
@@ -48,3 +89,21 @@ def test_create_stocks():
     assert id1 != id2
     assert id1 != id3
     assert id2 != id3
+
+    return id1 # For future tests
+
+def test_get_stock_by_id():
+    
+    # Accuiring the first id:
+    stock1_id = test_create_stocks()
+
+    # Preforming the actual GET request:
+    response = requests.get(f"{base_url}/stocks/{stock1_id}")
+
+    assert response.status_code == 200
+
+    assert response.json()["symbol"] == "NVDA"
+
+
+
+
