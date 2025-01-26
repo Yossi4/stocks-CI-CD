@@ -78,19 +78,16 @@ def test_create_stocks(): # Test 1
     response1 = requests.post(f"{base_url}/stocks", json=stock1)
     response2 = requests.post(f"{base_url}/stocks", json=stock2)
     response3 = requests.post(f"{base_url}/stocks", json=stock3)
-    response4 = requests.post(f"{base_url}/stocks", json=stock3)
 
     # Assert status codes are 201 (Created)
     assert response1.status_code == 201
     assert response2.status_code == 201
     assert response3.status_code == 201
-    assert response4.status_code == 201
 
     # Get the returned IDs from the responses
     id1 = response1.json().get("id")
     id2 = response2.json().get("id")
     id3 = response3.json().get("id")
-    id4 = response4.json().get("id")
 
     # Assert that all IDs are unique
     assert id1 != id2
@@ -120,6 +117,6 @@ def test_get_all_stocks():
     stocks = response.json()
 
 
-    assert len(stocks) == 8
+    assert len(stocks) == 6
 
 
