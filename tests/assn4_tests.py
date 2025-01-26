@@ -100,7 +100,7 @@ def test_create_stocks(): # Test 1
 def test_get_stock_by_id1(): # Test 2
     
     # Accuiring the first id:
-    stock1_id = test_create_stocks()
+    stock1_id = test_create_stocks()[0]
 
     # Preforming the actual GET request:
     response = requests.get(f"{base_url}/stocks/{stock1_id}")
