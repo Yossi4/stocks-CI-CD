@@ -193,11 +193,16 @@ def test_delete_stock_by_id(): # Test 7
 
 
 
-def test_delete_stock_by_id2():
+def test_delete_stock_by_id2(): # Test 8
     ids = test_create_stocks()
     stock1_id, stock2_id, stock3_id = ids
 
     response_get = requests.get(f"{base_url}/stocks/{stock2_id}")
     assert response_get.status_code == 404
 
+
+def test_post_with_incorret_date_format():
+    response = requests.post(f"{base_url}/stocks", json=stock8)
+
+    assert response.status_code == 400
 
