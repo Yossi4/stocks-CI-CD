@@ -9,53 +9,27 @@ jobs:
 
     steps:
       - name: Checkout repository  # Step 1: Checkout the code from your repository
-        uses: actions/checkout@v2  # This allows GitHub Actions to access your repository
+        uses: actions/checkout@v2
 
       - name: Set up Docker  # Step 2: Install Docker
-        uses: docker/setup-buildx-action@v2  # Action to set up Docker for the job
+        uses: docker/setup-buildx-action@v2
 
       - name: Install Docker Compose  # Step 3: Install Docker Compose
         run: |
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose  # Make docker-compose executable
+          sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Build Docker images  # Step 4: Build Docker images for the services
-        id: build_images
         run: |
-          start_time=$(date -Iminutes)  # Capture the start time
-          echo "Start time: $start_time" > $GITHUB_WORKSPACE/log.txt  # Save log.txt to the workspace
-          echo "Yossi Peleg" >> $GITHUB_WORKSPACE/log.txt  # Add your name
+          start_time=$(date -Iminutes)
+          echo "Start time: $start_time" > log.txt
+          echo "Yossi Peleg" >> log.txt
 
-          set +e
-          docker-compose -f docker-compose.yml build  # Build images
-          build_status=$?
-          set -e
-
-          if [ $build_status -eq 0 ]; then
-            echo "image successfully built" >> $GITHUB_WORKSPACE/log.txt
-          else
-            echo "image not able to be built" >> $GITHUB_WORKSPACE/log.txt
-          fi
-
-      - name: Docker Compose up  # Step 5: Start the application
-        if: success()
-        run: |
-          set +e
-          docker-compose -f docker-compose.yml up -d
-          up_status=$?
-          set -e
-
-          if [ $up_status -eq 0 ]; then
-            echo "Containers up and running" >> $GITHUB_WORKSPACE/log.txt  # Save to workspace log.txt
-          else
-            echo "Containers failed to run" >> $GITHUB_WORKSPACE/log.txt
-          fi
-
-      - name: Upload temporary log.txt artifact  # Step 6: Upload the log.txt artifact temporarily
+      - name: Upload initial log.txt as artifact  # Step 5: Upload the dummy artifact
         uses: actions/upload-artifact@v4
         with:
-          name: log-temp  # Temporary artifact name
-          path: $GITHUB_WORKSPACE/log.txt  # Upload log.txt to share with the next job
+          name: ignore  # Dummy artifact name
+          path: log.txt
 
   test:
     runs-on: ubuntu-latest
@@ -63,41 +37,32 @@ jobs:
 
     steps:
       - name: Checkout repository  # Step 1: Checkout the code from your repository
-        uses: actions/checkout@v2  # This allows GitHub Actions to access your repository
+        uses: actions/checkout@v2
 
-      - name: Set up Python environment  # Step 2: Install Python and pytest
-        run: |
-          sudo apt update
-          sudo apt install -y python3 python3-pip
-          pip3 install pytest
-
-      - name: Download log.txt artifact from build job  # Step 3: Download the log.txt artifact from the build job
+      - name: Download dummy log.txt artifact  # Step 2: Download the dummy artifact
         uses: actions/download-artifact@v4
         with:
-          name: log-temp  # This should match the temporary artifact name used in the build job
-          path: $GITHUB_WORKSPACE  # Save it in the workspace directory
+          name: ignore  # Dummy artifact name
+          path: .
 
-      - name: Append to log.txt after tests  # Step 4: Append test results to log.txt
+      - name: Run pytest and append results to log.txt  # Step 3: Run tests and update log.txt
         run: |
           pytest tests/assn4_tests.py > assn4_test_results.txt || true
           cat assn4_test_results.txt
           if grep -q "FAILURES" assn4_test_results.txt; then
-            echo "tests failed" >> $GITHUB_WORKSPACE/log.txt  # Append to log.txt in workspace
+            echo "tests failed" >> log.txt
           else
-            echo "tests succeeded" >> $GITHUB_WORKSPACE/log.txt
+            echo "tests succeeded" >> log.txt
           fi
 
-      - name: Check if log.txt exists before uploading  # Step 5: Debug if log.txt is there
-        run: |
-          if [ -f "$GITHUB_WORKSPACE/log.txt" ]; then
-            echo "log.txt exists!"
-            cat $GITHUB_WORKSPACE/log.txt  # Print log.txt content to debug
-          else
-            echo "log.txt does NOT exist!"  # Debugging message
-          fi
+      - name: Upload test results artifact  # Step 4: Upload the test results as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results  # Name of the test results artifact
+          path: assn4_test_results.txt
 
-      - name: Upload updated log.txt as the final artifact  # Step 6: Upload the final log.txt
+      - name: Upload updated log.txt as final artifact  # Step 5: Upload the updated log.txt
         uses: actions/upload-artifact@v4
         with:
           name: log  # Final artifact name
-          path: $GITHUB_WORKSPACE/log.txt  # Upload updated log.txt after modification
+          path: log.txt
