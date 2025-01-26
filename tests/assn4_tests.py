@@ -155,7 +155,11 @@ def test_get_portfolio_value():
 
     pv = float(response.json()["portfolio value"])
 
-    total_value = sv1 + sv2 + sv3
+    shares1 = stock1["shares"]
+    shares2 = stock2["shares"]
+    shares3 = stock3["shares"]
+
+    total_value = sv1*shares1 + sv2*shares2 + sv3*shares3
 
     # Checking for the ±3%:
     assert pv * 0.97 <= total_value <= pv * 1.03
