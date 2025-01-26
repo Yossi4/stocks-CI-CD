@@ -138,9 +138,9 @@ def test_get_stock_by_id2():
     assert response2.json()["symbol"] == "AAPL"
     assert response3.json()["symbol"] == "GOOG"
 
-    sv1 = response1.json()["stock value"]
-    sv2 = response2.json()["stock value"]
-    sv3 = response3.json()["stock value"]
+    sv1 = response1.json()["ticker"]
+    sv2 = response2.json()["ticker"]
+    sv3 = response3.json()["ticker"]
 
     return [sv1,sv2,sv3]
 
