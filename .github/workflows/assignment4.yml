@@ -23,8 +23,8 @@ jobs:
         id: build_images
         run: |
           start_time=$(date -Iminutes)  # Capture the start time
-          echo "Start time: $start_time" > $GITHUB_WORKSPACE/log.txt  # Save log.txt to the workspace
-          echo "Yossi Peleg" >> $GITHUB_WORKSPACE/log.txt  # Add your name
+          echo "Start time: $start_time" > log.txt  # Overwrite log.txt initially to set start time
+          echo "Yossi Peleg" >> log.txt  # Add your name
 
           set +e
           docker-compose -f docker-compose.yml build  # Build images
@@ -32,9 +32,9 @@ jobs:
           set -e
 
           if [ $build_status -eq 0 ]; then
-            echo "image successfully built" >> $GITHUB_WORKSPACE/log.txt
+            echo "image successfully built" >> log.txt
           else
-            echo "image not able to be built" >> $GITHUB_WORKSPACE/log.txt
+            echo "image not able to be built" >> log.txt
           fi
 
       - name: Docker Compose up  # Step 5: Start the application
@@ -46,16 +46,16 @@ jobs:
           set -e
 
           if [ $up_status -eq 0 ]; then
-            echo "Containers up and running" >> $GITHUB_WORKSPACE/log.txt  # Save to workspace log.txt
+            echo "Containers up and running" >> log.txt  # Append status
           else
-            echo "Containers failed to run" >> $GITHUB_WORKSPACE/log.txt
+            echo "Containers failed to run" >> log.txt  # Append failure status
           fi
 
-      - name: Upload log.txt artifact  # Step 6: Upload the log.txt artifact
+      - name: Upload log.txt as artifact  # Upload the log.txt file as an artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ignore
-          path: $GITHUB_WORKSPACE/log.txt  # Upload log.txt to share with the next job
+          name: ignore  # The artifact's name
+          path: log.txt  # The file to upload
 
   test:
     runs-on: ubuntu-latest
@@ -71,30 +71,40 @@ jobs:
           sudo apt install -y python3 python3-pip
           pip3 install pytest
 
-      - name: Download log.txt artifact  # Step 3: Download the log.txt artifact from the build job
+      - name: Download log artifact  # Step 3: Download the log.txt file from the build job
         uses: actions/download-artifact@v4
         with:
-          name: ignore  # This should match the artifact name used in the build job
-          path: log.txt  # Save it in the workspace directory
+          name: ignore  # The artifact's name
+          path: ./  # Download it to the current directory
 
-      - name: Run and log pytest results  # Step 5: Run pytest and append results to log.txt
+      - name: Run tests  # Step 4: Run pytest
         run: |
           pytest tests/assn4_tests.py > assn4_test_results.txt || true
-          cat assn4_test_results.txt
+
+      - name: Log test results status  # Update log.txt with test results
+        run: |
           if grep -q "FAILURES" assn4_test_results.txt; then
-            echo "tests failed" >> $GITHUB_WORKSPACE/log.txt  # Append to log.txt in workspace
+            echo "tests failed" >> log.txt  # Append "tests failed"
           else
-            echo "tests succeeded" >> $GITHUB_WORKSPACE/log.txt
+            echo "tests succeeded" >> log.txt  # Append "tests succeeded"
           fi
 
-      - name: Upload updated log.txt  # Step 6: Upload the updated log.txt as an artifact
+      - name: Upload artifacts  # Upload test results and the log file
         uses: actions/upload-artifact@v4
         with:
-          name: log
-          path: $GITHUB_WORKSPACE/log.txt  # Upload updated log.txt after modification
-
-      - name: Upload test results  # Step 7: Upload test results as a separate artifact
+          name: test-results-and-log
+          path: |
+            assn4_test_results.txt
+            log.txt  # Upload log.txt with the appended information
+      - name: Upload test results  # Upload the pytest results file
         uses: actions/upload-artifact@v4
         with:
-          name: pytest-results
+          name: test-results  # Artifact name for test results
           path: assn4_test_results.txt
+
+      - name: Upload log file  # Upload the log file
+        uses: actions/upload-artifact@v4
+        with:
+          name: log  # Artifact name for the log file
+          path: log.txt
+  
