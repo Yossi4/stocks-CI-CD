@@ -2,18 +2,27 @@ import requests
 
 # Define the stock data for the three stocks
 stock1 = {
-    "name": "NVIDIA Corporation", "symbol": "NVDA",
-    "purchase price": 134.66, "purchase date": "18-06-2024",
+    "name": "NVIDIA Corporation", 
+    "symbol": "NVDA",
+    "purchase price": 134.66, 
+    "purchase date": "18-06-2024",
+    "shares":7
 }
 
 stock2 = {
-    "name": "Apple Inc.", "symbol": "AAPL",
-    "purchase price": 183.63, "purchase date": "22-02-2024", "shares": 19
+    "name": "Apple Inc.", 
+    "symbol": "AAPL",
+    "purchase price": 183.63, 
+    "purchase date": "22-02-2024", 
+    "shares": 19
 }
 
 stock3 = {
-    "name": "Alphabet Inc.", "symbol": "GOOG",
-    "purchase price": 140.12, "purchase date": "24-10-2024", "shares": 14
+    "name": "Alphabet Inc.", 
+    "symbol": "GOOG",
+    "purchase price": 140.12, 
+    "purchase date": "24-10-2024", 
+    "shares": 14
 }
 
 # The base URL of your application (adjust as necessary)
