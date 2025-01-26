@@ -125,10 +125,9 @@ jobs:
         with:
           name: log  # Artifact name for the log file
           path: log.txt
-
-
   query:
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - name: Checkout repository
