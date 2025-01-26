@@ -37,20 +37,6 @@ jobs:
             echo "image not able to be built" >> log.txt
           fi
 
-      - name: Docker Compose up  # Step 5: Start the application
-        if: success()
-        run: |
-          set +e
-          docker-compose -f docker-compose.yml up -d
-          up_status=$?
-          set -e
-
-          if [ $up_status -eq 0 ]; then
-            echo "Containers up and running" >> log.txt  # Append status
-          else
-            echo "Containers failed to run" >> log.txt  # Append failure status
-          fi
-
       - name: Upload log.txt as artifact  # Upload the log.txt file as an artifact
         uses: actions/upload-artifact@v4
         with:
@@ -76,6 +62,20 @@ jobs:
         with:
           name: ignore  # The artifact's name
           path: ./  # Download it to the current directory
+
+      - name: Docker Compose up  # Step 5: Start the application
+        run: |
+          set +e
+          docker-compose -f docker-compose.yml up -d
+          up_status=$?
+          set -e
+  
+          if [ $up_status -eq 0 ]; then
+            echo "Containers up and running" >> log.txt  # Append status
+          else
+            echo "Containers failed to run" >> log.txt  # Append failure status
+          fi
+
 
       - name: Check running containers with docker ps  # Step 4: Verify containers are running
         run: |
