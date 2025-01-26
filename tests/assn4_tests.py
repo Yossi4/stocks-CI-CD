@@ -128,7 +128,7 @@ def test_get_all_stocks(): # Test 3
 def test_get_stock_by_id2():
     ids = test_create_stocks()
     stock1_id, stock2_id, stock3_id = ids
-    
+
     response1 = requests.get(f"{base_url}/stock-value/{stock1_id}")
     response2 = requests.get(f"{base_url}/stock-value/{stock2_id}")
     response3 = requests.get(f"{base_url}/stock-value/{stock3_id}")
@@ -169,4 +169,11 @@ def test_get_portfolio_value():
 
     # Checking for the ±3%:
     assert pv * 0.97 <= total_value <= pv * 1.03
+
+
+
+def test_post_stock_without_symbol():
+    response = requests.post(f"{base_url}/stocks", json=stock7)
+
+    assert response.status_code == 400
 
