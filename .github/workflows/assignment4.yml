@@ -52,10 +52,8 @@ jobs:
         uses: actions/checkout@v2  # This allows GitHub Actions to access your repository
 
 
-      - name: Set up Docker and Docker Compose  # Step 2: Install Docker and Docker Compose
+      - name: Install Docker Compose  # Step 3: Install Docker Compose
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose  # Make docker-compose executable
 
