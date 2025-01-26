@@ -136,19 +136,19 @@ jobs:
       - name: Get stocks before POST requests
         run: |
           echo "Getting stock list before POST requests"
-          curl -X GET http://localhost:5001/stocks
+          curl -X GET http://localhost:8000/stocks
 
       - name: Execute 6 POST requests to add stocks
         run: |
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "NVIDIA Corporation", "symbol": "NVDA", "purchase price": 134.66, "purchase date": "18-06-2024", "shares": 7}' http://localhost:5001/stocks
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "Apple Inc.", "symbol": "AAPL", "purchase price": 183.63, "purchase date": "22-02-2024", "shares": 19}' http://localhost:5001/stocks
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "Alphabet Inc.", "symbol": "GOOG", "purchase price": 140.12, "purchase date": "24-10-2024", "shares": 14}' http://localhost:5001/stocks
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "Tesla, Inc.", "symbol": "TSLA", "purchase price": 194.58, "purchase date": "28-11-2022", "shares": 32}' http://localhost:5001/stocks
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "Microsoft Corporation", "symbol": "MSFT", "purchase price": 420.55, "purchase date": "09-02-2024", "shares": 35}' http://localhost:5001/stocks
-          curl -X POST -H "Content-Type: application/json" -d '{"name": "Intel Corporation", "symbol": "INTC", "purchase price": 19.15, "purchase date": "13-01-2025", "shares": 10}' http://localhost:5001/stocks
+          curl -X POST -H "Content-Type: application/json" -d '{"name": "NVIDIA Corporation", "symbol": "NVDA", "purchase price": 134.66, "purchase date": "18-06-2024", "shares": 7}' http://localhost:8000/stocks
+          curl -X POST -H "Content-Type: application/json" -d '{"name": "Apple Inc.", "symbol": "AAPL", "purchase price": 183.63, "purchase date": "22-02-2024", "shares": 19}' http://localhost:8000/stocks
+          curl -X POST -H "Content-Type: application/json" -d '{"name": "Alphabet Inc.", "symbol": "GOOG", "purchase price": 140.12, "purchase date": "24-10-2024", "shares": 14}' http://localhost:8000/stocks
+          curl -X POST -H "Content-Type: application/json" -d '{"name": "Tesla, Inc.", "symbol": "TSLA", "purchase price": 194.58, "purchase date": "28-11-2022", "shares": 32}' http://localhost:8000/stocks
+          curl -X POST -H "Content-Type: application/json" -d '{"name": "Microsoft Corporation", "symbol": "MSFT", "purchase price": 420.55, "purchase date": "09-02-2024", "shares": 35}' http://localhost:8000/stocks
+          curl -X POST -H "Content-Type: application/json" -d '{"name": "Intel Corporation", "symbol": "INTC", "purchase price": 19.15, "purchase date": "13-01-2025", "shares": 10}' http://localhost:8000/stocks
 
       - name: Get stocks after POST requests
         run: |
           echo "Getting stock list after POST requests"
-          curl -X GET http://localhost:5001/stocks
+          curl -X GET http://localhost:8000/stocks
   
