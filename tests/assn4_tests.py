@@ -159,7 +159,16 @@ def test_get_portfolio_value():
     shares2 = stock2["shares"]
     shares3 = stock3["shares"]
 
+    assert shares
+
     total_value = sv1*shares1 + sv2*shares2 + sv3*shares3
+
+     # Print for debugging
+    print(f"Stock 1 value: {sv1}, Shares: {shares1}, Total: {sv1 * shares1}")
+    print(f"Stock 2 value: {sv2}, Shares: {shares2}, Total: {sv2 * shares2}")
+    print(f"Stock 3 value: {sv3}, Shares: {shares3}, Total: {sv3 * shares3}")
+    print(f"Total stock value: {total_value}")
+    print(f"Portfolio value (pv): {pv}")
 
     # Checking for the ±3%:
     assert pv * 0.97 <= total_value <= pv * 1.03
