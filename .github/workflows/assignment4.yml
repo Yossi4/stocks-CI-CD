@@ -76,6 +76,17 @@ jobs:
             echo "Containers failed to run" >> log.txt  # Append failure status
           fi
 
+      - name: Wait for stocks service to be ready  # Step 6: Wait until the service is ready
+        run: |
+           for i in {1..30}; do  # Retry 30 times
+              if curl --silent --fail http://localhost:5001/stocks; then
+                echo "Stocks service is up!"
+                break
+              else
+                echo "Waiting for stocks service to be available..."
+                sleep 5
+              fi
+            done
 
       - name: Check running containers with docker ps  # Step 4: Verify containers are running
         run: |
