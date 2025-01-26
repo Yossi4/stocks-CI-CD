@@ -125,7 +125,7 @@ def test_get_all_stocks(): # Test 3
     assert len(stocks) == 3
 
 
-def test_get_stock_by_id2():
+def test_get_stock_by_id2(): # Test 4
     ids = test_create_stocks()
     stock1_id, stock2_id, stock3_id = ids
 
@@ -148,7 +148,7 @@ def test_get_stock_by_id2():
     return [sv1,sv2,sv3]
 
 
-def test_get_portfolio_value():
+def test_get_portfolio_value(): # Test 5
     stock_values = test_get_stock_by_id2()
     sv1, sv2, sv3 = float(stock_values[0]), float(stock_values[1]), float(stock_values[2])
 
@@ -172,8 +172,23 @@ def test_get_portfolio_value():
 
 
 
-def test_post_stock_without_symbol():
+def test_post_stock_without_symbol(): # Test 6
     response = requests.post(f"{base_url}/stocks", json=stock7)
 
     assert response.status_code == 400
+
+
+
+
+def test_delete_stock_by_id(): # Test 7
+    ids = test_create_stocks()
+    stock1_id, stock2_id, stock3_id = ids
+
+
+    response = requests.delete(f"{base_url}/stocks/{stock2_id}")
+
+    assert response.status_code == 200
+
+    global created_stock_ids
+    created_stock_ids.remove(stock2_id)
 
