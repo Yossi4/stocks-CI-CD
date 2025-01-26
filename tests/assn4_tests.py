@@ -116,8 +116,6 @@ def test_get_all_stocks():
 
     stocks = response.json()
 
-    print(stocks)
-
 
     assert len(stocks) == 3
 
