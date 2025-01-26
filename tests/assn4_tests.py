@@ -94,9 +94,10 @@ def test_create_stocks(): # Test 1
     assert id1 != id3
     assert id2 != id3
 
-    return id1 # For future tests
+    return [id1,id2,id3] # For future tests
 
-def test_get_stock_by_id(): # Test 2
+
+def test_get_stock_by_id1(): # Test 2
     
     # Accuiring the first id:
     stock1_id = test_create_stocks()
@@ -109,7 +110,7 @@ def test_get_stock_by_id(): # Test 2
     assert response.json()["symbol"] == "NVDA"
 
 
-def test_get_all_stocks():
+def test_get_all_stocks(): # Test 3
     response = requests.get(f"{base_url}/stocks")
 
     assert response.status_code == 200
@@ -120,3 +121,25 @@ def test_get_all_stocks():
     assert len(stocks) == 6
 
 
+def test_get_stock_by_id2():
+    stock1_id = test_create_stocks()[0]
+    stock2_id = test_create_stocks()[1]
+    stock3_id = test_create_stocks()[2]
+
+    response1 = requests.get(f"{base_url}/stock-value/{stock1_id}")
+    response2 = requests.get(f"{base_url}/stock-value/{stock2_id}")
+    response3 = requests.get(f"{base_url}/stock-value/{stock3_id}")
+
+    assert response1.status_code == 200
+    assert response2.status_code == 200
+    assert response3.status_code == 200
+
+    assert response1.json()["symbol"] == "NVDA"
+    assert response2.json()["symbol"] == "AAPL"
+    assert response3.json()["symbol"] == "GOOG"
+
+    sv1 = response1.json()["stock value"]
+    sv2 = response2.json()["stock value"]
+    sv3 = response3.json()["stock value"]
+
+    return [sv1,sv2,sv3]
