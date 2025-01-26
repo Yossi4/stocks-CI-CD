@@ -70,31 +70,35 @@ stock8 = {
 base_url = "http://localhost:5001"  # Replace with actual endpoint if different
 
 
-
+created_stock_ids = None
 
 def test_create_stocks(): # Test 1
-    
-    # Perform POST requests for the three stocks
-    response1 = requests.post(f"{base_url}/stocks", json=stock1)
-    response2 = requests.post(f"{base_url}/stocks", json=stock2)
-    response3 = requests.post(f"{base_url}/stocks", json=stock3)
+    global created_stock_ids
+    if created_stock_ids is None:
+        # Perform POST requests for the stocks
+        response1 = requests.post(f"{base_url}/stocks", json=stock1)
+        response2 = requests.post(f"{base_url}/stocks", json=stock2)
+        response3 = requests.post(f"{base_url}/stocks", json=stock3)
 
-    # Assert status codes are 201 (Created)
-    assert response1.status_code == 201
-    assert response2.status_code == 201
-    assert response3.status_code == 201
+        # Assert status codes are 201 (Created)
+        assert response1.status_code == 201
+        assert response2.status_code == 201
+        assert response3.status_code == 201
 
-    # Get the returned IDs from the responses
-    id1 = response1.json().get("id")
-    id2 = response2.json().get("id")
-    id3 = response3.json().get("id")
+        # Get the returned IDs from the responses
+        id1 = response1.json().get("id")
+        id2 = response2.json().get("id")
+        id3 = response3.json().get("id")
 
-    # Assert that all IDs are unique
-    assert id1 != id2
-    assert id1 != id3
-    assert id2 != id3
+        # Assert that all IDs are unique
+        assert id1 != id2
+        assert id1 != id3
+        assert id2 != id3
 
-    return [id1,id2,id3] # For future tests
+        # Store the IDs in the global variable
+        created_stock_ids = [id1, id2, id3]
+
+    return created_stock_ids
 
 
 def test_get_stock_by_id1(): # Test 2
@@ -118,14 +122,13 @@ def test_get_all_stocks(): # Test 3
     stocks = response.json()
 
 
-    assert len(stocks) == 6
+    assert len(stocks) == 3
 
 
 def test_get_stock_by_id2():
-    stock1_id = test_create_stocks()[0]
-    stock2_id = test_create_stocks()[1]
-    stock3_id = test_create_stocks()[2]
-
+    ids = test_create_stocks()
+    stock1_id, stock2_id, stock3_id = ids
+    
     response1 = requests.get(f"{base_url}/stock-value/{stock1_id}")
     response2 = requests.get(f"{base_url}/stock-value/{stock2_id}")
     response3 = requests.get(f"{base_url}/stock-value/{stock3_id}")
@@ -138,9 +141,9 @@ def test_get_stock_by_id2():
     assert response2.json()["symbol"] == "AAPL"
     assert response3.json()["symbol"] == "GOOG"
 
-    sv1 = response1.json()["ticker"]
-    sv2 = response2.json()["ticker"]
-    sv3 = response3.json()["ticker"]
+    sv1 = response1.json()["stock value"]
+    sv2 = response2.json()["stock value"]
+    sv3 = response3.json()["stock value"]
 
     return [sv1,sv2,sv3]
 
@@ -153,20 +156,14 @@ def test_get_portfolio_value():
 
     assert response.status_code == 200
 
-    pv = float(response.json()["portfolio value"])
+    pv = float(response.json()["portfolio value"])    
 
-    shares1 = stock1["shares"]
-    shares2 = stock2["shares"]
-    shares3 = stock3["shares"]
+    total_value = sv1 + sv2 + sv3
 
-    
-
-    total_value = sv1*shares1 + sv2*shares2 + sv3*shares3
-
-     # Print for debugging
-    print(f"Stock 1 value: {sv1}, Shares: {shares1}, Total: {sv1 * shares1}")
-    print(f"Stock 2 value: {sv2}, Shares: {shares2}, Total: {sv2 * shares2}")
-    print(f"Stock 3 value: {sv3}, Shares: {shares3}, Total: {sv3 * shares3}")
+    # Print for debugging
+    print(f"Stock 1 value: {sv1}")
+    print(f"Stock 2 value: {sv2}")
+    print(f"Stock 3 value: {sv3}")
     print(f"Total stock value: {total_value}")
     print(f"Portfolio value (pv): {pv}")
 
