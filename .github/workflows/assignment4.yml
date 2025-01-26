@@ -23,8 +23,8 @@ jobs:
         id: build_images
         run: |
           start_time=$(date -Iminutes)  # Capture the start time
-          echo "Start time: $start_time" > $GITHUB_WORKSPACE/log.txt  # Save log.txt to the workspace
-          echo "Yossi Peleg" >> $GITHUB_WORKSPACE/log.txt  # Add your name
+          echo "Start time: $start_time" > log.txt  # Save log.txt to the workspace
+          echo "Yossi Peleg" >> log.txt  # Add your name
 
           set +e
           docker-compose -f docker-compose.yml build  # Build images
@@ -32,9 +32,9 @@ jobs:
           set -e
 
           if [ $build_status -eq 0 ]; then
-            echo "image successfully built" >> $GITHUB_WORKSPACE/log.txt
+            echo "image successfully built" >> log.txt
           else
-            echo "image not able to be built" >> $GITHUB_WORKSPACE/log.txt
+            echo "image not able to be built" >> log.txt
           fi
 
       - name: Docker Compose up  # Step 5: Start the application
@@ -46,9 +46,9 @@ jobs:
           set -e
 
           if [ $up_status -eq 0 ]; then
-            echo "Containers up and running" >> $GITHUB_WORKSPACE/log.txt  # Save to workspace log.txt
+            echo "Containers up and running" >> log.txt  # Save to workspace log.txt
           else
-            echo "Containers failed to run" >> $GITHUB_WORKSPACE/log.txt
+            echo "Containers failed to run" >> log.txt
           fi
 
       - name: Upload log.txt artifact  # Step 6: Upload the log.txt artifact
@@ -82,9 +82,9 @@ jobs:
           pytest tests/assn4_tests.py > assn4_test_results.txt || true
           cat assn4_test_results.txt
           if grep -q "FAILURES" assn4_test_results.txt; then
-            echo "tests failed" >> $GITHUB_WORKSPACE/log.txt  # Append to log.txt in workspace
+            echo "tests failed" >> log.txt  # Append to log.txt in workspace
           else
-            echo "tests succeeded" >> $GITHUB_WORKSPACE/log.txt
+            echo "tests succeeded" >> log.txt
           fi
 
       - name: Upload updated log.txt  # Step 6: Upload the updated log.txt as an artifact
