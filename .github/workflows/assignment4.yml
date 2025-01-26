@@ -77,6 +77,12 @@ jobs:
           name: ignore  # The artifact's name
           path: ./  # Download it to the current directory
 
+      - name: Check running containers with docker ps  # Step 4: Verify containers are running
+        run: |
+          echo "Listing all running containers:"
+          docker ps  # List all running containers
+  
+
       - name: Run tests  # Step 4: Run pytest
         run: |
           pytest tests/assn4_tests.py > assn4_test_results.txt || true
