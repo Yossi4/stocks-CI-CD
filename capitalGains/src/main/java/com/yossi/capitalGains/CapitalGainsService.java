@@ -46,7 +46,7 @@ public class CapitalGainsService {
 
         for (Stock stock : stocks) {
             double currentValue = getCurrentStockValue(stock.getId(), stock.getPortfolio());
-            double gain = (currentValue - stock.getPrice()) * stock.getNumberOfShares();
+            double gain = currentValue - (stock.getPrice() * stock.getNumberOfShares());
             totalCapitalGains += gain;
         }
 
@@ -91,7 +91,7 @@ public class CapitalGainsService {
 
         
             // Calculate gain
-            double gain = (currentValue - stock.getPrice()) * stock.getNumberOfShares();
+            double gain = currentValue - (stock.getPrice() * stock.getNumberOfShares());
             System.out.println("Capital Gain: " + gain);
             totalCapitalGains += gain;
         }
