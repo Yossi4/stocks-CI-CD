@@ -2,3 +2,4 @@ stocks:shares=7
 stocks:shares=9
 capital-gains:numsharesgt=4
 capital-gains:numshareslt=5
+capital-gains:numsharesgt=18&numshareslt=20
