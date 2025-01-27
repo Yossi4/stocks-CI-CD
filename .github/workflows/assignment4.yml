@@ -178,3 +178,22 @@ jobs:
       run: |
         echo "Getting stock list after POST requests"
         curl -X GET http://localhost:5001/stocks
+
+
+    - name: Read query.txt and process each query
+      id: query-processing
+      run: |
+          while IFS= read -r line; do
+            # Extract the service and query string from the line
+            service=$(echo $line | cut -d':' -f1)
+            query_string=$(echo $line | cut -d':' -f2)
+  
+            # Check if the service is "stocks" or "capital-gains"
+            if [ "$service" == "stocks" ]; then
+              echo "curl -X GET http://localhost:5001/stocks?$query_string"
+            elif [ "$service" == "capital-gains" ]; then
+              echo "curl -X GET http://localhost:5001/capital-gains?$query_string"
+            else
+              echo "Invalid service: $service"
+            fi
+          done < query.txt
