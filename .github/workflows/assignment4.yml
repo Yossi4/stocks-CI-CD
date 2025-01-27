@@ -183,6 +183,10 @@ jobs:
     - name: Read query.txt and process each query
       id: query-processing
       run: |
+          # Clear the response.txt file (if it exists)
+          > response.txt
+  
+          # Process each query in query.txt and generate the responses
           while IFS= read -r line; do
             # Extract the service and query string from the line
             service=$(echo $line | cut -d':' -f1)
@@ -190,10 +194,23 @@ jobs:
   
             # Check if the service is "stocks" or "capital-gains"
             if [ "$service" == "stocks" ]; then
-              echo "curl -X GET http://localhost:5001/stocks?$query_string"
+              query="curl -X GET http://localhost:5001/stocks?$query_string"
+              response=$(curl -s -X GET "http://localhost:5001/stocks?$query_string")
             elif [ "$service" == "capital-gains" ]; then
-              echo "curl -X GET http://localhost:5003/capital-gains?$query_string"
+              query="curl -X GET http://localhost:5003/capital-gains?$query_string"
+              response=$(curl -s -X GET "http://localhost:5003/capital-gains?$query_string")
             else
               echo "Invalid service: $service"
+              continue
             fi
+  
+            # Write the query and response to response.txt
+            echo "query: $line" >> response.txt
+            echo "response: $response" >> response.txt
+            echo "" >> response.txt  # Blank line between entries for clarity
           done < query.txt
+  
+    - name: Verify response.txt contents  # Step to verify the output file
+      run: |
+          echo "Displaying contents of response.txt:"
+          cat response.txt  # Display the content of the response.txt file
