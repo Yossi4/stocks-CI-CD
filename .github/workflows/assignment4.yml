@@ -192,7 +192,7 @@ jobs:
             if [ "$service" == "stocks" ]; then
               echo "curl -X GET http://localhost:5001/stocks?$query_string"
             elif [ "$service" == "capital-gains" ]; then
-              echo "curl -X GET http://localhost:5001/capital-gains?$query_string"
+              echo "curl -X GET http://localhost:5003/capital-gains?$query_string"
             else
               echo "Invalid service: $service"
             fi
