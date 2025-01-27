@@ -210,7 +210,8 @@ jobs:
             echo "" >> response.txt  # Blank line between entries for clarity
           done < query.txt
   
-    - name: Verify response.txt contents  # Step to verify the output file
-      run: |
-          echo "Displaying contents of response.txt:"
-          cat response.txt  # Display the content of the response.txt file
+    - name: Upload response.txt as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: response.txt
+        path: response.txt
