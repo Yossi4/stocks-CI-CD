@@ -1,5 +1,5 @@
 # Use an official OpenJDK image as the base
-# FROM openjdk:17-jdk-slim
+FROM openjdk:17-jdk-slim
 
 # Set environment variables for the database connection
 ENV DB_HOST=db
