@@ -122,7 +122,7 @@ def test_get_all_stocks(): # Test 3
     stocks = response.json()
 
 
-    assert len(stocks) == 2
+    assert len(stocks) == 3
 
 
 def test_get_stock_by_id2(): # Test 4
