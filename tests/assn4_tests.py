@@ -206,3 +206,8 @@ def test_post_with_incorret_date_format():
 
     assert response.status_code == 400
 
+
+def test_intentional_failure():
+    assert False, "This test is meant to fail"
+
+

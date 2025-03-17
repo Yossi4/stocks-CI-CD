@@ -80,6 +80,7 @@ jobs:
             echo "Containers up and running" >> log.txt  # Append status
           else
             echo "Containers failed to run" >> log.txt  # Append failure status
+            exit 1  # Stop if containers fail
           fi
 
       - name: Wait for stocks service to be ready  # Step 6: Wait until the service is ready
@@ -100,10 +101,19 @@ jobs:
           docker ps  # List all running containers
   
 
-      - name: Run tests  # Step 4: Run pytest
+      - name: Run tests  
         run: |
-          pytest tests/assn4_tests.py > assn4_test_results.txt || true
-          cat assn4_test_results.txt
+            pytest tests/assn4_tests.py > assn4_test_results.txt
+            test_status=$?  # Capture pytest exit code
+  
+            if [ $test_status -ne 0 ]; then
+              echo "tests failed" >> log.txt  
+            else
+              echo "tests succeeded" >> log.txt  
+            fi
+  
+            exit $test_status  # Fail the job if tests failed
+        
 
       - name: Log test results status  # Update log.txt with test results
         run: |
