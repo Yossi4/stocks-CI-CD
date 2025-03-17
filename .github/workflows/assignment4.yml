@@ -112,16 +112,16 @@ jobs:
               echo "tests succeeded" >> log.txt  
             fi
   
-            exit $test_status  # Fail the job if tests failed
+            echo $test_status > test_status.txt  
         
 
-      - name: Log test results status  # Update log.txt with test results
-        run: |
-          if grep -q "FAILURES" assn4_test_results.txt; then
-            echo "tests failed" >> log.txt  # Append "tests failed"
-          else
-            echo "tests succeeded" >> log.txt  # Append "tests succeeded"
-          fi
+     # - name: Log test results status  # Update log.txt with test results
+      #  run: |
+       #   if grep -q "FAILURES" assn4_test_results.txt; then
+        #    echo "tests failed" >> log.txt  # Append "tests failed"
+         # else
+          #  echo "tests succeeded" >> log.txt  # Append "tests succeeded"
+          #fi
 
       
       - name: Upload test results  # Upload the pytest results file
@@ -135,6 +135,8 @@ jobs:
         with:
           name: log  # Artifact name for the log file
           path: log.txt
+      - name: Fail job if tests failed  # Step to fail the job at the end
+        run: exit $(cat test_status.txt)
   query:
     runs-on: ubuntu-latest
     needs: test
