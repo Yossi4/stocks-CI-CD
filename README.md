@@ -1,4 +1,4 @@
-# Stock Portfolio Service CI/CD Pipeline (Cloud Computing Assignment #4)
+# Stock Portfolio Service CI/CD Pipeline (Cloud Computing)
 
 This repository contains the source code and CI/CD pipeline configuration for the stock portfolio application using GitHub Actions. This is the final assignment migrating the finance application from Docker Compose to a fully automated CI/CD pipeline with testing and deployment orchestration.
 
